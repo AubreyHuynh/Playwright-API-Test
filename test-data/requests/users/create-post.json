@@ -1,0 +1,15 @@
+{
+  "name": "Create Post",
+  "description": "Create a new post with static payload",
+  "method": "POST",
+  "endpoint": "/posts",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "params": [],
+  "body": {
+    "title": "Request File Post",
+    "body": "Created via request definition file",
+    "userId": 1
+  }
+}

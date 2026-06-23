@@ -1,0 +1,15 @@
+{
+  "name": "Create Product",
+  "description": "Create a new product on FakeStoreAPI",
+  "method": "POST",
+  "endpoint": "/products",
+  "headers": { "Content-Type": "application/json" },
+  "params": [],
+  "body": {
+    "title": "Request File Product",
+    "price": 99.99,
+    "description": "Created via request definition file",
+    "category": "electronics",
+    "image": "https://i.pravatar.cc/150"
+  }
+}

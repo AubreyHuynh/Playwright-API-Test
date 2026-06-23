@@ -1,0 +1,7 @@
+{
+  "title": "QA Test Product",
+  "price": 29.99,
+  "description": "Automated test product payload",
+  "category": "electronics",
+  "image": "https://i.pravatar.cc/150"
+}

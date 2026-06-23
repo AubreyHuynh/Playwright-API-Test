@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Environment files (never commit real credentials)
+.env
+.env.local
+.env.*.local
+
+# Playwright output
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# Auth state cache (tokens, written at runtime)
+auth-state/*.json
+
+# Logs
+logs/
+
+# Build output
+dist/
+
+# OS
+.DS_Store
+Thumbs.db

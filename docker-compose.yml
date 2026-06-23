@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  api-tests:
+    build: .
+    environment:
+      - ENV=${ENV:-dev}
+      - DEV_BASE_URL=${DEV_BASE_URL:-https://reqres.in/api}
+      - SANDBOX_BASE_URL=${SANDBOX_BASE_URL:-https://reqres.in/api}
+      - STAGING_BASE_URL=${STAGING_BASE_URL:-https://reqres.in/api}
+      - UAT_BASE_URL=${UAT_BASE_URL:-https://reqres.in/api}
+      - LIVE_BASE_URL=${LIVE_BASE_URL:-https://reqres.in/api}
+      - DEV_USERNAME=${DEV_USERNAME:-eve.holt@reqres.in}
+      - DEV_PASSWORD=${DEV_PASSWORD:-cityslicka}
+      - REQUEST_TIMEOUT_MS=${REQUEST_TIMEOUT_MS:-10000}
+      - RETRY_COUNT=${RETRY_COUNT:-3}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    volumes:
+      - ./playwright-report:/app/playwright-report
+      - ./logs:/app/logs

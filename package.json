@@ -1,0 +1,55 @@
+{
+  "name": "playwright-api-test-framework",
+  "version": "1.0.0",
+  "description": "Enterprise-level API automation framework using Playwright + TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "cross-env PLAYWRIGHT_FORCE_ASYNC_LOADER=true playwright test",
+    "test:dev": "cross-env PLAYWRIGHT_FORCE_ASYNC_LOADER=true ENV=dev playwright test",
+    "test:sandbox": "cross-env PLAYWRIGHT_FORCE_ASYNC_LOADER=true ENV=sandbox playwright test",
+    "test:staging": "cross-env PLAYWRIGHT_FORCE_ASYNC_LOADER=true ENV=staging playwright test",
+    "test:smoke": "cross-env PLAYWRIGHT_FORCE_ASYNC_LOADER=true playwright test --grep @smoke",
+    "test:regression": "cross-env PLAYWRIGHT_FORCE_ASYNC_LOADER=true playwright test --grep @regression",
+    "test:parallel": "cross-env PLAYWRIGHT_FORCE_ASYNC_LOADER=true playwright test --workers=4",
+    "report": "playwright show-report",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "keywords": [
+    "playwright",
+    "typescript",
+    "api-testing",
+    "automation"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.61.0",
+    "@types/node": "^26.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.61.1",
+    "@typescript-eslint/parser": "^8.61.1",
+    "cross-env": "^10.1.0",
+    "eslint": "^10.5.0",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.4",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^10.5.0",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "dotenv": "^16.6.1",
+    "winston": "^3.19.0"
+  }
+}

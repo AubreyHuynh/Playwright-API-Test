@@ -1,0 +1,12 @@
+{
+  "name": "Get Products Filtered",
+  "description": "Get products with limit and sort from FakeStoreAPI",
+  "method": "GET",
+  "endpoint": "/products",
+  "headers": {},
+  "params": [
+    { "key": "limit", "value": 5, "enabled": true, "description": "Max results per page" },
+    { "key": "sort", "value": "asc", "enabled": true, "description": "Sort order ascending" },
+    { "key": "_debug", "value": "true", "enabled": false, "description": "Disabled — not sent to server" }
+  ]
+}

@@ -1,0 +1,101 @@
+name: API Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        default: dev
+        type: choice
+        options: [dev, sandbox, staging, uat, live]
+      tags:
+        description: 'Test tags filter (e.g. @smoke, @regression)'
+        required: false
+        default: ''
+
+jobs:
+  lint:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+
+  test:
+    name: API Tests (shard ${{ matrix.shard }}/2)
+    needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shard: [1, 2]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Run API tests
+        env:
+          ENV: ${{ github.event.inputs.environment || 'dev' }}
+          DEV_BASE_URL: ${{ secrets.DEV_BASE_URL }}
+          SANDBOX_BASE_URL: ${{ secrets.SANDBOX_BASE_URL }}
+          STAGING_BASE_URL: ${{ secrets.STAGING_BASE_URL }}
+          UAT_BASE_URL: ${{ secrets.UAT_BASE_URL }}
+          LIVE_BASE_URL: ${{ secrets.LIVE_BASE_URL }}
+          DEV_USERNAME: ${{ secrets.DEV_USERNAME }}
+          DEV_PASSWORD: ${{ secrets.DEV_PASSWORD }}
+          SANDBOX_USERNAME: ${{ secrets.SANDBOX_USERNAME }}
+          SANDBOX_PASSWORD: ${{ secrets.SANDBOX_PASSWORD }}
+          API_KEY: ${{ secrets.API_KEY }}
+          REQUEST_TIMEOUT_MS: '10000'
+          RETRY_COUNT: '3'
+        run: |
+          TAGS="${{ github.event.inputs.tags }}"
+          if [ -n "$TAGS" ]; then
+            npx playwright test --shard=${{ matrix.shard }}/2 --grep="$TAGS" --reporter=blob
+          else
+            npx playwright test --shard=${{ matrix.shard }}/2 --reporter=blob
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blob-report-shard-${{ matrix.shard }}
+          path: blob-report/
+          retention-days: 1
+
+  merge-reports:
+    name: Merge & Publish Report
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-shard-*
+          merge-multiple: true
+      - run: npx playwright merge-reports --reporter html ./all-blob-reports
+      - uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

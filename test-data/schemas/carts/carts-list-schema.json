@@ -1,0 +1,13 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": { "type": "integer" },
+      "userId": { "type": "integer" },
+      "products": { "type": "array" }
+    },
+    "required": ["id", "userId", "products"],
+    "additionalProperties": true
+  }
+}

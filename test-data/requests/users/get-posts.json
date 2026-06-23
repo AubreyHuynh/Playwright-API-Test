@@ -1,0 +1,12 @@
+{
+  "name": "Get Posts Filtered",
+  "description": "Fetch posts with pagination and optional user filter",
+  "method": "GET",
+  "endpoint": "/posts",
+  "headers": {},
+  "params": [
+    { "key": "_limit", "value": 5, "enabled": true, "description": "Max results per page" },
+    { "key": "_page", "value": 1, "enabled": true, "description": "Page number" },
+    { "key": "userId", "value": 1, "enabled": false, "description": "Filter by user ID (disabled by default)" }
+  ]
+}
