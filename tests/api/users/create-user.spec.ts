@@ -6,7 +6,7 @@ import { responseValidator } from '../../../src/validators/responseValidator';
 // Assertions are scoped to what the API actually returns.
 
 test.describe('@smoke @regression create user', () => {
-  test('POST /users returns 200 with created id', async ({ apiClient, testUser }) => {
+  test('POST /users returns 201 with created id', async ({ apiClient, testUser }) => {
     // Arrange
     const payload = PayloadBuilder.fromObject({
       username: testUser.name.toLowerCase().replace(/\s+/g, '_'),
@@ -20,7 +20,7 @@ test.describe('@smoke @regression create user', () => {
     const elapsed = Date.now() - start;
 
     // Assert
-    responseValidator.status(response, 200);
+    responseValidator.status(response, 201);
     responseValidator.responseTime(elapsed);
     responseValidator.header(response, 'content-type', 'application/json');
 
@@ -28,7 +28,7 @@ test.describe('@smoke @regression create user', () => {
     expect(body.id).toBeDefined();
   });
 
-  test('POST /users with file payload returns 200', async ({ apiClient }) => {
+  test('POST /users with file payload returns 201', async ({ apiClient }) => {
     // Arrange
     const payload = PayloadBuilder.fromFile<{ username: string; email: string; password: string }>(
       'test-data/payloads/users/create-user.json',
@@ -38,12 +38,12 @@ test.describe('@smoke @regression create user', () => {
     const response = await apiClient.post('/users', { data: payload });
 
     // Assert
-    responseValidator.status(response, 200);
+    responseValidator.status(response, 201);
     const body = (await response.json()) as Record<string, unknown>;
     expect(body.id).toBeDefined();
   });
 
-  test('POST /users with dynamic payload override returns 200', async ({ apiClient, testUser }) => {
+  test('POST /users with dynamic payload override returns 201', async ({ apiClient, testUser }) => {
     // Arrange — start from static file, override with dynamic data
     const payload = PayloadBuilder.fromFile<{ username: string; email: string; password: string }>(
       'test-data/payloads/users/create-user.json',
@@ -56,7 +56,7 @@ test.describe('@smoke @regression create user', () => {
     const response = await apiClient.post('/users', { data: payload });
 
     // Assert
-    responseValidator.status(response, 200);
+    responseValidator.status(response, 201);
     const body = (await response.json()) as Record<string, unknown>;
     expect(body.id).toBeDefined();
   });

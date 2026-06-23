@@ -3,7 +3,7 @@ import { PayloadBuilder } from '../../../src/api/payloadBuilder';
 import { responseValidator } from '../../../src/validators/responseValidator';
 
 test.describe('@smoke @regression create product', () => {
-  test('POST /products returns 200 with dynamic data', async ({ apiClient, testProduct }) => {
+  test('POST /products returns 201 with dynamic data', async ({ apiClient, testProduct }) => {
     // Arrange
     const payload = PayloadBuilder.fromObject({
       title: testProduct.title,
@@ -19,7 +19,7 @@ test.describe('@smoke @regression create product', () => {
     const elapsed = Date.now() - start;
 
     // Assert
-    responseValidator.status(response, 200);
+    responseValidator.status(response, 201);
     responseValidator.responseTime(elapsed);
     responseValidator.header(response, 'content-type', 'application/json');
     await responseValidator.bodyContains(response, {
@@ -31,7 +31,7 @@ test.describe('@smoke @regression create product', () => {
     expect(body.id).toBeDefined();
   });
 
-  test('POST /products with file payload returns 200', async ({ apiClient }) => {
+  test('POST /products with file payload returns 201', async ({ apiClient }) => {
     // Arrange
     const payload = PayloadBuilder.fromFile<{
       title: string;
@@ -45,11 +45,11 @@ test.describe('@smoke @regression create product', () => {
     const response = await apiClient.post('/products', { data: payload });
 
     // Assert
-    responseValidator.status(response, 200);
+    responseValidator.status(response, 201);
     await responseValidator.bodyContains(response, { title: 'QA Test Product' });
   });
 
-  test('POST /products with dynamic payload override returns 200', async ({
+  test('POST /products with dynamic payload override returns 201', async ({
     apiClient,
     testProduct,
   }) => {
@@ -69,7 +69,7 @@ test.describe('@smoke @regression create product', () => {
     const response = await apiClient.post('/products', { data: payload });
 
     // Assert
-    responseValidator.status(response, 200);
+    responseValidator.status(response, 201);
     await responseValidator.bodyContains(response, { title: testProduct.title });
   });
 });

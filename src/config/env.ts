@@ -27,4 +27,5 @@ export const env = {
   timeoutMs: parseInt(optionalEnv('REQUEST_TIMEOUT_MS', '10000'), 10),
   retryCount: parseInt(optionalEnv('RETRY_COUNT', '3'), 10),
   logLevel: optionalEnv('LOG_LEVEL', 'info'),
+  authStatePath: optionalEnv('AUTH_STATE_PATH', 'auth-state/token.json'),
 };

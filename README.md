@@ -106,7 +106,7 @@ npx playwright show-report
 | `RETRY_COUNT` | `3` | Number of retries on network errors |
 | `LOG_LEVEL` | `info` | Winston log level (`debug / info / warn / error`) |
 | `PLAYWRIGHT_FORCE_ASYNC_LOADER` | `true` | Required on Node.js 22+ |
-| `AUTH_STATE_PATH` | `.auth/token.json` | Token cache file path |
+| `AUTH_STATE_PATH` | `auth-state/token.json` | Token cache file path |
 
 ## Key Design Patterns
 

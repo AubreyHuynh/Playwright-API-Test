@@ -10,5 +10,5 @@ export const config = {
   timeout: env.timeoutMs,
   retryCount: env.retryCount,
   logLevel: env.logLevel,
-  authStatePath: 'auth-state/token.json',
+  authStatePath: env.authStatePath,
 } as const;

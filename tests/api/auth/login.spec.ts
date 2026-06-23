@@ -4,7 +4,7 @@ import { schemaValidator } from '../../../src/validators/schemaValidator';
 import { config } from '../../../src/config/config';
 
 test.describe('@smoke auth — login', () => {
-  test('POST /auth/login with valid credentials returns 200 and token', async ({ apiClient }) => {
+  test('POST /auth/login with valid credentials returns 201 and token', async ({ apiClient }) => {
     // Arrange — use seeded FakeStoreAPI test account from config
     const payload = {
       username: config.credentials.username,
@@ -17,7 +17,7 @@ test.describe('@smoke auth — login', () => {
     const elapsed = Date.now() - start;
 
     // Assert — FakeStoreAPI returns 200 for successful login
-    responseValidator.status(response, 200);
+    responseValidator.status(response, 201);
     responseValidator.responseTime(elapsed);
     responseValidator.header(response, 'content-type', 'application/json');
 
