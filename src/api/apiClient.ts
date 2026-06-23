@@ -57,7 +57,7 @@ export class ApiClient {
         method,
         headers: opts.headers,
         params: params as Record<string, string | number | boolean>,
-        data: opts.data !== undefined ? JSON.stringify(opts.data) : undefined,
+        data: opts.data,
         timeout,
       });
       const elapsed = Date.now() - start;

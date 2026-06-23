@@ -52,7 +52,7 @@ test.describe('@smoke @regression builder pattern', () => {
       .execute(apiClient);
 
     // Assert
-    responseValidator.status(response, 200);
+    responseValidator.status(response, 201);
     await responseValidator.bodyContains(response, { title: testProduct.title });
   });
 
@@ -71,7 +71,7 @@ test.describe('@smoke @regression builder pattern', () => {
     const response = await RequestBuilder.post('/products').body(payload).execute(apiClient);
 
     // Assert
-    responseValidator.status(response, 200);
+    responseValidator.status(response, 201);
     await responseValidator.bodyContains(response, { title: testProduct.title });
   });
 

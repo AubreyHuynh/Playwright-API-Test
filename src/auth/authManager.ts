@@ -49,12 +49,15 @@ export class AuthManager {
       data: { username, password },
     });
 
-    if (response.status() !== 200) {
+    if (!response.ok()) {
       const body = await response.text();
       throw new AuthError(`Login failed (${response.status()}): ${body}`);
     }
 
     const body = (await response.json()) as { token: string };
+    if (!body.token) {
+      throw new AuthError('Login response did not include a bearer token');
+    }
     this.tokenStore.save(body.token);
     return body.token;
   }
