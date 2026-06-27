@@ -28,3 +28,6 @@ Thumbs.db
 
 # docs
 /docs/
+
+# Codex workspace metadata
+.agents/

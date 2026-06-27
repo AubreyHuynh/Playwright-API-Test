@@ -3,6 +3,10 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { config } from '../config/config';
 
+const MAX_STRING_LENGTH = 500;
+const MAX_ARRAY_ITEMS = 10;
+const MAX_OBJECT_ENTRIES = 25;
+
 const SENSITIVE_KEYS = new Set([
   'password',
   'token',
@@ -16,14 +20,30 @@ const LOGS_DIR = path.resolve(process.cwd(), 'logs');
 fs.mkdirSync(LOGS_DIR, { recursive: true });
 
 function maskSensitive(obj: unknown): unknown {
+  if (typeof obj === 'string') {
+    return obj.length > MAX_STRING_LENGTH
+      ? `${obj.slice(0, MAX_STRING_LENGTH)}... [truncated ${obj.length - MAX_STRING_LENGTH} chars]`
+      : obj;
+  }
   if (!obj || typeof obj !== 'object') return obj;
-  if (Array.isArray(obj)) return obj.map(maskSensitive);
-  return Object.fromEntries(
-    Object.entries(obj as Record<string, unknown>).map(([k, v]) => [
-      k,
-      SENSITIVE_KEYS.has(k.toLowerCase()) ? '[MASKED]' : maskSensitive(v),
-    ]),
-  );
+  if (Array.isArray(obj)) {
+    const items = obj.slice(0, MAX_ARRAY_ITEMS).map(maskSensitive);
+    if (obj.length > MAX_ARRAY_ITEMS) {
+      items.push(`... [truncated ${obj.length - MAX_ARRAY_ITEMS} items]`);
+    }
+    return items;
+  }
+  const entries = Object.entries(obj as Record<string, unknown>);
+  const maskedEntries = entries.slice(0, MAX_OBJECT_ENTRIES).map(([k, v]) => [
+    k,
+    SENSITIVE_KEYS.has(k.toLowerCase()) ? '[MASKED]' : maskSensitive(v),
+  ]);
+
+  if (entries.length > MAX_OBJECT_ENTRIES) {
+    maskedEntries.push(['_truncatedEntries', entries.length - MAX_OBJECT_ENTRIES]);
+  }
+
+  return Object.fromEntries(maskedEntries);
 }
 
 const winstonLogger = winston.createLogger({
@@ -44,7 +64,7 @@ export const logger = {
   error: (msg: string, meta?: unknown) => winstonLogger.error(msg, { meta }),
 
   logRequest(method: string, url: string, headers?: unknown, body?: unknown): void {
-    winstonLogger.info('→ REQUEST', {
+    winstonLogger.info('REQUEST', {
       method,
       url,
       headers: maskSensitive(headers),
@@ -53,10 +73,11 @@ export const logger = {
   },
 
   logResponse(status: number, body: unknown, elapsedMs: number): void {
-    winstonLogger.info('← RESPONSE', {
+    winstonLogger.info('RESPONSE', {
       status,
       body: maskSensitive(body),
       elapsedMs,
     });
   },
 };
+

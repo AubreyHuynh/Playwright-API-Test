@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { logger } from '../utils/logger';
 
 interface TokenData {
   token: string;
@@ -19,17 +20,28 @@ export class TokenStore {
       token,
       expiresAt: Date.now() + ttlSeconds * 1000,
     };
-    fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2));
+    const tempPath = `${this.filePath}.tmp`;
+    fs.writeFileSync(tempPath, JSON.stringify(data, null, 2));
+    fs.renameSync(tempPath, this.filePath);
   }
 
   load(): string | null {
     if (!fs.existsSync(this.filePath)) return null;
-    const data = JSON.parse(fs.readFileSync(this.filePath, 'utf-8')) as TokenData;
-    if (Date.now() > data.expiresAt) {
+    try {
+      const data = JSON.parse(fs.readFileSync(this.filePath, 'utf-8')) as TokenData;
+      if (!data.token || typeof data.expiresAt !== 'number' || Date.now() > data.expiresAt) {
+        this.clear();
+        return null;
+      }
+      return data.token;
+    } catch (error) {
+      logger.warn('Token cache was unreadable and has been cleared', {
+        path: this.filePath,
+        error: error instanceof Error ? error.message : error,
+      });
       this.clear();
       return null;
     }
-    return data.token;
   }
 
   clear(): void {

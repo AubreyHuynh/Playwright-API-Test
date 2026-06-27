@@ -9,6 +9,8 @@ export const config = {
   apiKey: env.apiKey,
   timeout: env.timeoutMs,
   retryCount: env.retryCount,
+  retryDelayMs: env.retryDelayMs,
   logLevel: env.logLevel,
   authStatePath: env.authStatePath,
+  authTokenTtlSeconds: env.authTokenTtlSeconds,
 } as const;

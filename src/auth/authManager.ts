@@ -54,11 +54,11 @@ export class AuthManager {
       throw new AuthError(`Login failed (${response.status()}): ${body}`);
     }
 
-    const body = (await response.json()) as { token: string };
+    const body = (await response.json()) as { token: string; expiresIn?: number };
     if (!body.token) {
       throw new AuthError('Login response did not include a bearer token');
     }
-    this.tokenStore.save(body.token);
+    this.tokenStore.save(body.token, body.expiresIn ?? config.authTokenTtlSeconds);
     return body.token;
   }
 
